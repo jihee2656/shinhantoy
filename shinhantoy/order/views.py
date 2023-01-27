@@ -58,3 +58,17 @@ class CommentCreateView(
 
     def post(self, request, *args, **kwargs):
         return self.create(request, args, kwargs)
+
+class CommentDeleteView(
+    mixins.DestroyModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView
+):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.filter(member__pk=self.request.user.id).order_by('id')
+
+    def delete(self,request,*args,**kwargs):       
+        return self.destroy(request,args,kwargs)
+        
